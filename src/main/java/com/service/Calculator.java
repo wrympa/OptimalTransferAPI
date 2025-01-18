@@ -16,30 +16,26 @@ public class Calculator {
 
     public void setUp(requestStructure request) {
         this.maxWeight = request.getMaxWeight();
-        this.transferStructures = request.getAvailableTransfers();
+        this.transferStructures = request.getAvailableTransferStructures();
     }
 
     public replyStructure calculate() {
         if(!sanityCheck()){
-            ArrayList<transferStructure> emptyList = new ArrayList<>();
-            replyStructure reply = new replyStructure(List.of(), 0, 0);
-            reply.setSelectedTransfers(emptyList);
-            reply.setTotalCost(0);
-            reply.setTotalWeight(0);
-            return reply;
+            return new replyStructure(List.of(), 0, 0);
         }
+
         int transfer_count = transferStructures.size();
         int[][] dp = new int [transfer_count + 1][maxWeight + 1];
         boolean[][] selected = new boolean [transfer_count + 1][maxWeight + 1];
 
         for (int i = 1; i <= transfer_count; i++) {
             transferStructure currentTransferStructure = transferStructures.get(i - 1);
-
             for (int j = 0; j <= maxWeight; j++) {
                 int excluded = dp[i - 1][j];
 
                 if (currentTransferStructure.getWeight() <= j) {
                     int included = dp[i - 1][j - currentTransferStructure.getWeight()] + currentTransferStructure.getCost();
+
                     if (included > excluded) {
                         dp[i][j] = included;
                         selected[i][j] = true;
@@ -65,11 +61,7 @@ public class Calculator {
         }
         Collections.reverse(selectedTransferStructures);
 
-        replyStructure reply = new replyStructure(List.of(), 0, 0);
-        reply.setSelectedTransfers(selectedTransferStructures);
-        reply.setTotalCost(dp[transfer_count][maxWeight]);
-        reply.setTotalWeight(maxWeight - currentWeight);
-        return reply;
+        return new replyStructure(selectedTransferStructures, dp[transfer_count][maxWeight], maxWeight - currentWeight);
     }
 
     private boolean sanityCheck() {
