@@ -73,7 +73,7 @@ java -jar target/your-project-name-1.0-SNAPSHOT.jar
 ```
 then open another terminal, and you can run the following command to test the API:
 ```shell
-curl -X POST http://localhost:8080/api/transfers/findOptimal \
+curl -X POST http://localhost:8094/api/transfers/findOptimal \
      -H "Content-Type: application/json" \
      -d '{"maxWeight": 10, "availableTransfers":[{"weight": 2, "cost": 3}, {"weight": 3, "cost": 4}, {"weight": 4, "cost": 5}]}'
 ```

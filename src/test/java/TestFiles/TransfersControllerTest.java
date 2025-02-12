@@ -3,6 +3,7 @@ package TestFiles;
 import com.controller.TransfersController;
 import com.model.requestStructure;
 import com.model.replyStructure;
+import com.service.LeftoverHolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,6 +26,8 @@ public class TransfersControllerTest {
 
     @Mock
     private Calculator calculator;
+    @Mock
+    private LeftoverHolder leftoverHolder;
 
     @InjectMocks
     private TransfersController transfersController;
@@ -33,7 +36,8 @@ public class TransfersControllerTest {
     @BeforeEach
     public void setUp() {
         this.calculator = new Calculator();
-        this.transfersController = new TransfersController(calculator);
+        this.leftoverHolder = new LeftoverHolder();
+        this.transfersController = new TransfersController(calculator, leftoverHolder);
         mockMvc = org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(transfersController).build();
     }
 

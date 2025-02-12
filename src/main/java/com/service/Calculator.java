@@ -3,6 +3,7 @@ package com.service;
 import com.model.transferStructure;
 import com.model.replyStructure;
 import com.model.requestStructure;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,10 +14,13 @@ import java.util.List;
 public class Calculator {
     private int maxWeight;
     private List<transferStructure> transferStructures;
+    @Getter
+    private List<transferStructure> leftovers;
 
     public void setUp(requestStructure request) {
         this.maxWeight = request.getMaxWeight();
         this.transferStructures = request.getAvailableTransferStructures();
+        this.leftovers = new ArrayList<>();
     }
 
     public replyStructure calculate() {
@@ -52,6 +56,7 @@ public class Calculator {
 
         List<transferStructure> selectedTransferStructures = new ArrayList<>();
         int currentWeight = maxWeight;
+
         for (int i = transfer_count; i > 0; i--) {
             if (selected[i][currentWeight]) {
                 transferStructure selectedTransferStructure = transferStructures.get(i - 1);
@@ -60,6 +65,8 @@ public class Calculator {
             }
         }
         Collections.reverse(selectedTransferStructures);
+
+        this.leftovers.addAll(transferStructures.stream().filter(selectedTransferStructures::contains).toList());
 
         return new replyStructure(selectedTransferStructures, dp[transfer_count][maxWeight], maxWeight - currentWeight);
     }
